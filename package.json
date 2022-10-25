@@ -4,7 +4,9 @@
   "description": "API for AR task MotionMovieApp",
   "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "start": "set NODE_ENV=development&& node src/index.js",
+    "start-prod": "set NODE_ENV=production&& node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -28,5 +30,8 @@
     "express-validator": "^5.3.1",
     "mongoose": "^6.6.7",
     "nodemon": "^2.0.20"
+  },
+  "engines": {
+    "node": "16.17.0"
   }
 }

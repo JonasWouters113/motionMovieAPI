@@ -1,0 +1,32 @@
+{
+  "name": "motionmovieapi",
+  "version": "1.0.0",
+  "description": "API for AR task MotionMovieApp",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JonasWouters113/motionMovieAPI.git"
+  },
+  "keywords": [
+    "AR",
+    "Motion",
+    "movie",
+    "Git"
+  ],
+  "author": "Jonas Wouters",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JonasWouters113/motionMovieAPI/issues"
+  },
+  "homepage": "https://github.com/JonasWouters113/motionMovieAPI#readme",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "express-validator": "^5.3.1",
+    "mongoose": "^6.6.7",
+    "nodemon": "^2.0.20"
+  }
+}

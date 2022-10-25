@@ -9,24 +9,15 @@ const app = express();
 // Validation
 app.use(expressValidator());
 // Encoding of parameters in body
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+app.use(bodyParser.json()); 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 // Connection to database
-const databaseURL = 'mongodb+srv://motionMovie:motionMovie3APP@posterdb.tbqjgbg.mongodb.net/posterDB'
+const databaseURL = 'mongodb+srv://motionMovie:motionMovie3APP@posterdb.tbqjgbg.mongodb.net/PosterDB'
 mongoose.connect(databaseURL);
 
-// Schema for posters
-const posterSchema = {
-    id: Number,
-    trailerURL: String,
-    review: String,
-}
-
-// Class ofzo
-const PosterData = mongoose.model('PosterData', posterSchema);
+var { Poster } = require('../models/poster');
 
 // Start app
 const port = 3000;
@@ -36,7 +27,7 @@ app.listen(port, function(){
 
 // Get all posters
 const getPosters = (req, res) => {
-    PosterData.find((err, foundMovies) => {
+    Poster.find((err, foundMovies) => {
         if(!err) res.send(foundMovies);
         if(err) res.send(err);
     });
@@ -44,7 +35,7 @@ const getPosters = (req, res) => {
 
 // Get one poster
 const getPoster = (req, res) => {
-    PosterData.findOne(
+    Poster.findOne(
         { id: req.params.id},
         function(err, foundPoster){
             if(foundPoster) res.send(foundPoster)
@@ -55,20 +46,23 @@ const getPoster = (req, res) => {
 
 // Create one poster
 const createPoster = (req, res) => {
-    console.log(req.params)
-    
-    const newPoster = new PosterData(
-        {
-            id: req.body.id,
-            trailerURL: req.body.trailerURL,
-            review: req.body.review,
-        }
-    );
+    console.log("body:", req.body);
+    const newPoster = new Poster(req.body);
+    console.log("newPoster:", newPoster);
 
     // Saving poster
+//    newPoster.save()
+//    .then(item => res.send('Item saved to database'))
+//    .catch(err => res.status(400).send('unable to save to database'))
+
     newPoster.save((err) => {
-        if(!err) res.send('Successfully added a new poster!');
-        if(err) res.send(err);
+        if(!err){
+            res.send('Successfully added a new poster!');
+        }
+        if(err){
+            console.log(err);
+            res.send(err);
+        } 
     })
 }
 
@@ -76,6 +70,8 @@ const createPoster = (req, res) => {
 // Post poster
 const createPostValidator = (req, res, next) => {
     req.check('id', 'Give id').notEmpty();
+    req.check('trailerURL', 'Give trailerURL').notEmpty();
+    req.check('review', 'Give review').notEmpty();
 
     // Check for errors
     const errors = req.validationErrors();
@@ -90,7 +86,7 @@ const createPostValidator = (req, res, next) => {
 
 // Update poster
 const patchPoster = (req, res) => {
-    PosterData.updateOne(
+    Poster.updateOne(
         { id: req.params.id },
         { $set: req.body },
         (err) => {
@@ -102,7 +98,7 @@ const patchPoster = (req, res) => {
 
 // Delete all posters
 const deletePosters = (req, res) => {
-    PosterData.deleteMany((err) => {
+    Poster.deleteMany((err) => {
         if(!err) res.send("Successfully deleted all movies!");
         if(err) res.send(err);
     })
@@ -110,12 +106,13 @@ const deletePosters = (req, res) => {
 
 // Delete one poster
 const deletePoster = (req, res) => {
-    PosterData.deleteOne({ id: req.params.id });
+    Poster.deleteOne({ id: req.params.id });
 }
 
 // Routes
 app.get("/posters", getPosters);
 app.get("/poster/:id", getPoster);
 app.patch("/poster/:id", patchPoster);
-app.post("/poster/create", createPoster);
-app.delete("/posters/delete", deletePosters);app.delete("/poster/delete/:id", deletePoster);
+app.post("/poster/create",createPostValidator, createPoster);
+app.delete("/posters/delete", deletePosters);
+app.delete("/poster/delete/:id", deletePoster);

@@ -17,7 +17,7 @@ app.use(express.static('public'));
 const databaseURL = 'mongodb+srv://motionMovie:motionMovie3APP@posterdb.tbqjgbg.mongodb.net/PosterDB'
 mongoose.connect(databaseURL);
 
-var { Poster } = require('../models/poster');
+var { Poster } = require('./models/poster');
 
 // Start app
 const port = 3000;
